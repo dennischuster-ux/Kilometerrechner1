@@ -1,0 +1,397 @@
+html
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jahresfahrleistung Rechner</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Dezente Animation für das Einblenden von Ergebnissen */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen py-8 px-4 sm:px-6 lg:px-8 flex flex-col justify-between">
+
+    <div class="max-w-3xl mx-auto w-full">
+        <!-- Kopfbereich -->
+        <header class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-500/30 mb-4">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">Jahresfahrleistung Rechner</h1>
+            <p class="text-slate-500 text-sm sm:text-base mt-1.5 max-w-lg mx-auto">
+                Berechne deine hochgerechnete jährliche und monatliche Kilometerleistung anhand zweier Zählerstände.
+            </p>
+        </header>
+
+        <!-- Hauptkarte -->
+        <main class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 p-6 sm:p-8">
+            <form id="calculatorForm" class="space-y-6" novalidate onsubmit="return false;">
+                
+                <!-- Eingabefelder im 2-Spalten-Raster -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Start-Abschnitt -->
+                    <div class="p-5 bg-slate-50/70 border border-slate-100 rounded-2xl space-y-4">
+                        <div class="flex items-center space-x-2 pb-1 border-b border-slate-200/60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500">1. Anfangswert</h2>
+                        </div>
+                        
+                        <div>
+                            <label for="startDate" class="block text-sm font-medium text-slate-700 mb-1">Startdatum</label>
+                            <input type="date" id="startDate" required
+                                class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm">
+                        </div>
+
+                        <div>
+                            <label for="startKm" class="block text-sm font-medium text-slate-700 mb-1">Startkilometerstand</label>
+                            <div class="relative">
+                                <input type="number" id="startKm" min="0" step="1" placeholder="z. B. 45000" required
+                                    class="w-full pr-12 pl-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm">
+                                <span class="absolute right-3.5 top-2.5 text-slate-400 text-sm select-none font-medium">km</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- End-Abschnitt -->
+                    <div class="p-5 bg-slate-50/70 border border-slate-100 rounded-2xl space-y-4">
+                        <div class="flex items-center space-x-2 pb-1 border-b border-slate-200/60">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500">2. Aktueller Wert</h2>
+                        </div>
+                        
+                        <div>
+                            <label for="endDate" class="block text-sm font-medium text-slate-700 mb-1">Enddatum / Aktuelles Datum</label>
+                            <input type="date" id="endDate" required
+                                class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm">
+                        </div>
+
+                        <div>
+                            <label for="endKm" class="block text-sm font-medium text-slate-700 mb-1">Endkilometerstand</label>
+                            <div class="relative">
+                                <input type="number" id="endKm" min="0" step="1" placeholder="z. B. 48500" required
+                                    class="w-full pr-12 pl-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition shadow-sm">
+                                <span class="absolute right-3.5 top-2.5 text-slate-400 text-sm select-none font-medium">km</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Fehlermeldung Box (Standardmäßig ausgeblendet) -->
+                <div id="errorBox" class="hidden p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span id="errorMessage" class="leading-relaxed"></span>
+                </div>
+
+                <!-- Aktions-Schaltflächen -->
+                <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                    <button type="button" id="btnCalculate"
+                        class="w-full sm:w-auto flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-xl transition shadow-md shadow-blue-500/20 active:scale-[0.99] flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>Fahrleistung berechnen</span>
+                    </button>
+                    
+                    <button type="button" id="btnSample"
+                        class="w-full sm:w-auto px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-medium transition active:scale-[0.99]">
+                        Beispiel laden
+                    </button>
+
+                    <button type="button" id="btnReset"
+                        class="w-full sm:w-auto px-4 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-sm font-medium transition active:scale-[0.99]">
+                        Zurücksetzen
+                    </button>
+                </div>
+            </form>
+
+            <!-- Ergebnisbereich -->
+            <section id="resultsSection" class="hidden mt-8 pt-8 border-t border-slate-100 animate-fade-in">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-2">
+                    <h3 class="text-lg font-bold text-slate-900">Auswertung der Fahrleistung</h3>
+                    <div id="driverProfileBadge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200/60 w-fit">
+                        Normalfahrer
+                    </div>
+                </div>
+
+                <!-- Haupt-Highlight Karte: Jahresleistung -->
+                <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg shadow-blue-500/20 mb-6">
+                    <p class="text-blue-100 text-sm font-medium tracking-wide">Hochgerechnete Jahresfahrleistung</p>
+                    <div class="flex items-baseline space-x-2 mt-1">
+                        <span id="resYearKm" class="text-3xl sm:text-4xl font-extrabold tracking-tight">0</span>
+                        <span class="text-lg font-semibold text-blue-200">km / Jahr</span>
+                    </div>
+                    <p class="text-xs text-blue-200/80 mt-2">
+                        Basis: 365,25 Tage pro Kalenderjahr (inkl. Schaltjahreskorrektur).
+                    </p>
+                </div>
+
+                <!-- Detail-Kacheln -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Gefahrene km -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                        <span class="text-xs font-medium text-slate-500 block mb-1">Gefahrene Strecke</span>
+                        <div class="text-xl font-bold text-slate-800">
+                            <span id="resTotalKm">0</span> <span class="text-xs text-slate-500 font-normal">km</span>
+                        </div>
+                        <span class="text-xs text-slate-400 mt-1 block">im gemessenen Intervall</span>
+                    </div>
+
+                    <!-- Zeitraum -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                        <span class="text-xs font-medium text-slate-500 block mb-1">Messzeitraum</span>
+                        <div class="text-xl font-bold text-slate-800">
+                            <span id="resTotalDays">0</span> <span class="text-xs text-slate-500 font-normal">Tage</span>
+                        </div>
+                        <span id="resWeeksDisplay" class="text-xs text-slate-400 mt-1 block">entspricht ca. 0 Wochen</span>
+                    </div>
+
+                    <!-- Durchschnitt / Tag -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                        <span class="text-xs font-medium text-slate-500 block mb-1">Tagesdurchschnitt</span>
+                        <div class="text-xl font-bold text-slate-800">
+                            <span id="resDailyKm">0</span> <span class="text-xs text-slate-500 font-normal">km / Tag</span>
+                        </div>
+                        <span class="text-xs text-slate-400 mt-1 block">Ø pro Kalendertag</span>
+                    </div>
+                </div>
+
+                <!-- Zusatzinformation: Monatsschnitt -->
+                <div class="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                    <span class="text-sm font-medium text-slate-700">Hochgerechnete Monatsfahrleistung (30,4 Tage)</span>
+                    <div class="text-lg font-bold text-slate-900">
+                        <span id="resMonthKm">0</span> <span class="text-sm text-slate-500 font-normal">km / Monat</span>
+                    </div>
+                </div>
+
+                <!-- Info-Hinweis für Kfz-Versicherung -->
+                <div class="mt-4 p-3.5 rounded-xl bg-amber-50/70 border border-amber-200/60 text-xs text-amber-800 flex items-start space-x-2.5">
+                    <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>
+                        <strong>Tipp für die Kfz-Versicherung:</strong> Überprüfe deine jährliche Kilometer-Staffel bei deiner Autoversicherung (z. B. 10.000 km, 15.000 km). Falls du deutlich mehr fährst, lohnt sich eine rechtzeitige Nachmeldung, um Nachzahlungen oder Versicherungsschutzverlust zu vermeiden.
+                    </span>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-xs text-slate-400">
+            Fahrleistung-Rechner &bull; Alle Berechnungen erfolgen lokal im Browser.
+        </footer>
+    </div>
+
+    <!-- JavaScript Logik -->
+    <script>
+        // DOM-Elemente
+        const startDateInput = document.getElementById('startDate');
+        const startKmInput = document.getElementById('startKm');
+        const endDateInput = document.getElementById('endDate');
+        const endKmInput = document.getElementById('endKm');
+
+        const btnCalculate = document.getElementById('btnCalculate');
+        const btnReset = document.getElementById('btnReset');
+        const btnSample = document.getElementById('btnSample');
+
+        const errorBox = document.getElementById('errorBox');
+        const errorMessage = document.getElementById('errorMessage');
+
+        const resultsSection = document.getElementById('resultsSection');
+        const resYearKm = document.getElementById('resYearKm');
+        const resMonthKm = document.getElementById('resMonthKm');
+        const resDailyKm = document.getElementById('resDailyKm');
+        const resTotalKm = document.getElementById('resTotalKm');
+        const resTotalDays = document.getElementById('resTotalDays');
+        const resWeeksDisplay = document.getElementById('resWeeksDisplay');
+        const driverProfileBadge = document.getElementById('driverProfileBadge');
+
+        // Deutsches Zahlenformat (z.B. 12.500 oder 34,2)
+        const formatNumberInt = new Intl.NumberFormat('de-DE', { maximumFractionDigits: 0 });
+        const formatNumberDec = new Intl.NumberFormat('de-DE', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+        // Hilfsfunktion: Datum als YYYY-MM-DD formatieren
+        function toDateString(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Standardwerte initial setzen (Start vor 60 Tagen, Ende heute)
+        function setInitialDates() {
+            const today = new Date();
+            const past = new Date();
+            past.setDate(today.getDate() - 60);
+
+            endDateInput.value = toDateString(today);
+            startDateInput.value = toDateString(past);
+        }
+
+        // Fehlermeldung anzeigen
+        function showError(msg) {
+            errorMessage.textContent = msg;
+            errorBox.classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+        }
+
+        // Fehlermeldung ausblenden
+        function hideError() {
+            errorBox.classList.add('hidden');
+            errorMessage.textContent = '';
+        }
+
+        // Profil-Klassifizierung
+        function getDriverProfile(annualKm) {
+            if (annualKm < 6000) {
+                return { label: 'Wenigfahrer (< 6.000 km)', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+            } else if (annualKm <= 12000) {
+                return { label: 'Gelegenheitsfahrer (6.000 – 12.000 km)', color: 'bg-blue-50 text-blue-700 border-blue-200' };
+            } else if (annualKm <= 20000) {
+                return { label: 'Normalfahrer / Pendler (12.000 – 20.000 km)', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' };
+            } else {
+                return { label: 'Vielfahrer (> 20.000 km)', color: 'bg-amber-50 text-amber-700 border-amber-200' };
+            }
+        }
+
+        // Hauptberechnung
+        function calculate() {
+            hideError();
+
+            const startVal = startDateInput.value;
+            const endVal = endDateInput.value;
+            const startKm = parseFloat(startKmInput.value);
+            const endKm = parseFloat(endKmInput.value);
+
+            // Validierung: Vollständigkeit
+            if (!startVal || !endVal) {
+                showError('Bitte gib sowohl ein Start- als auch ein Enddatum an.');
+                return;
+            }
+
+            if (isNaN(startKm) || isNaN(endKm)) {
+                showError('Bitte gib gültige Kilometerstände für Start und Ende an.');
+                return;
+            }
+
+            if (startKm < 0 || endKm < 0) {
+                showError('Die Kilometerstände dürfen nicht negativ sein.');
+                return;
+            }
+
+            // Validierung: Kilometerlogik
+            if (endKm < startKm) {
+                showError(`Der Endkilometerstand (${formatNumberInt.format(endKm)} km) darf nicht kleiner sein als der Startkilometerstand (${formatNumberInt.format(startKm)} km).`);
+                return;
+            }
+
+            // Zeit-Berechnung
+            const startDate = new Date(startVal);
+            const endDate = new Date(endVal);
+
+            // Zeitkomponenten neutralisieren (Mitternacht UTC)
+            const utcStart = Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+            const utcEnd = Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+
+            const msPerDay = 1000 * 60 * 60 * 24;
+            const diffDays = Math.round((utcEnd - utcStart) / msPerDay);
+
+            if (diffDays <= 0) {
+                showError('Das Enddatum muss mindestens einen Tag nach dem Startdatum liegen, um eine Hochrechnung zu ermöglichen.');
+                return;
+            }
+
+            // Kennzahlen ermitteln
+            const diffKm = endKm - startKm;
+            const kmPerDay = diffKm / diffDays;
+            const yearFactor = 365.25; // Berücksichtigt durchschnittliche Schaltjahre
+            const monthFactor = 365.25 / 12; // ca. 30,4375 Tage pro Monat
+
+            const projectedYearKm = kmPerDay * yearFactor;
+            const projectedMonthKm = kmPerDay * monthFactor;
+            const diffWeeks = (diffDays / 7).toFixed(1);
+
+            // UI aktualisieren
+            resTotalKm.textContent = formatNumberInt.format(diffKm);
+            resTotalDays.textContent = formatNumberInt.format(diffDays);
+            resWeeksDisplay.textContent = `entspricht ca. ${diffWeeks.replace('.', ',')} Wochen`;
+
+            resDailyKm.textContent = formatNumberDec.format(kmPerDay);
+            resMonthKm.textContent = formatNumberInt.format(Math.round(projectedMonthKm));
+            resYearKm.textContent = formatNumberInt.format(Math.round(projectedYearKm));
+
+            // Profil-Badge aktualisieren
+            const profile = getDriverProfile(projectedYearKm);
+            driverProfileBadge.textContent = profile.label;
+            driverProfileBadge.className = `inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${profile.color} w-fit`;
+
+            // Ergebnisse sichtbar schalten
+            resultsSection.classList.remove('hidden');
+        }
+
+        // Beispieldaten eintragen
+        function loadSampleData() {
+            const today = new Date();
+            const past = new Date();
+            past.setDate(today.getDate() - 110); // 110 Tage zurück
+
+            startDateInput.value = toDateString(past);
+            endDateInput.value = toDateString(today);
+
+            startKmInput.value = '42150';
+            endKmInput.value = '46820';
+
+            hideError();
+            calculate();
+        }
+
+        // Zurücksetzen
+        function resetCalculator() {
+            setInitialDates();
+            startKmInput.value = '';
+            endKmInput.value = '';
+            hideError();
+            resultsSection.classList.add('hidden');
+        }
+
+        // Event-Listener
+        btnCalculate.addEventListener('click', calculate);
+        btnReset.addEventListener('click', resetCalculator);
+        btnSample.addEventListener('click', loadSampleData);
+
+        // Automatisches Berechnen bei Enter-Taste in Eingabefeldern
+        [startKmInput, endKmInput, startDateInput, endDateInput].forEach(elem => {
+            elem.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    calculate();
+                }
+            });
+        });
+
+        // Initialisierung beim Seitenaufruf
+        setInitialDates();
+    </script>
+</body>
+</html>
